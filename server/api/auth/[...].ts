@@ -2,7 +2,8 @@ import {NuxtAuthHandler} from '#auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github'
 import GoogleProvider from 'next-auth/providers/google'
-import axios from "axios";
+import {objectToArray} from "~/utils/errorFormater";
+import {httpRequest} from "~/utils/axios";
 
 const runtimeConfig = useRuntimeConfig()
 
@@ -24,14 +25,14 @@ export default NuxtAuthHandler({
                     password: credentials.password,
                 };
                 try {
-                    const {data} = await axios.post(`${process.env.SERVER_URL}/auth/login/`, payload);
+                    const {data} = await httpRequest.post('/auth/login/', payload);
                     return data;
-                } catch (error: any) {
-                    if (error.response) {
-                        const {data: errors} = error.response;
-                        throw new Error(JSON.stringify(errors));
+                } catch (error) {
+                    if (error instanceof Error && 'response' in error) {
+                        const {data: errors} = (error as any).response;
+                        const formattedData = objectToArray(errors);
+                        throw new Error(JSON.stringify(formattedData));
                     }
-                    throw new Error('Authorization error');
                 }
             },
         }),

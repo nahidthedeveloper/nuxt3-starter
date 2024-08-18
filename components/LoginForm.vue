@@ -8,14 +8,30 @@ const form = ref({
   password: ''
 });
 const handleSignIn = async () => {
-  try {
-    await signIn('credentials', {username: form.value.email_or_username, password: form.value.password});
-    alert('Login successful!');
-  } catch (err) {
-    console.log(err)
-  }
-};
+  signIn('credentials', {
+    username: form.value.email_or_username,
+    password: form.value.password,
+    redirect: false
+  }).then((response) => {
+    if (response?.error) {
+      try {
+        const errors = JSON.parse(response.error);
+        errors.map((e) => {
+          console.log(e.message[0])
+          // return setError(e.name, {
+          //   type: "manual",
+          //   message: e.message[0],
+          // });
+        })
 
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      navigateTo('/')
+    }
+  });
+};
 </script>
 
 <template>
