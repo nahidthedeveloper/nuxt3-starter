@@ -1,33 +1,39 @@
-<script setup>
-import {ref} from 'vue';
+<script setup lang="js">
+import LoginForm from "~/components/LoginForm.vue";
 
-const {signIn} = useAuth();
-
-const username = ref('');
-const password = ref('');
-
-const handleSignIn = async () => {
-  try {
-    await signIn('credentials', {username: username.value, password: password.value});
-    alert('Login successful!');
-  } catch (error) {
-    console.log(error)
-  }
-};
+definePageMeta({
+  middleware: "auth"
+})
 </script>
+
 <template>
-  <div class="">
-    <h1>Sign In</h1>
-    <form @submit.prevent="handleSignIn">
-      <div class="">
-        <label for="username">Username:</label>
-        <input v-model="username" type="text" id="username" required/>
+  <section>
+    <div
+        class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0"
+    >
+      <div
+          class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
+      >
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <h1
+              class="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white"
+          >
+            Welcome back
+          </h1>
+
+          <div class="flex flex-wrap gap-x-2 gap-y-4 w-full justify-center">
+            <GithubLogin/>
+            <GoogleLogin/>
+          </div>
+          <div class="flex items-center">
+            <div class="bg-gray-500 h-[.125rem] w-full"></div>
+            <p class="mx-8 text-medium text-gray-500">or</p>
+            <div class="bg-gray-500 h-[.125rem] w-full"></div>
+          </div>
+
+          <LoginForm/>
+        </div>
       </div>
-      <div class="">
-        <label for="password">Password:</label>
-        <input v-model="password" type="password" id="password" required/>
-      </div>
-      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Sign In</button>
-    </form>
-  </div>
+    </div>
+  </section>
 </template>

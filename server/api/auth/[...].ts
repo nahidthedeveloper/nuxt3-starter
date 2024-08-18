@@ -1,13 +1,17 @@
 import {NuxtAuthHandler} from '#auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GithubProvider from 'next-auth/providers/github'
+import GoogleProvider from 'next-auth/providers/google'
 import axios from "axios";
 
+const runtimeConfig = useRuntimeConfig()
+
 export default NuxtAuthHandler({
-    secret: useRuntimeConfig().authSecret,
+    secret: runtimeConfig.authSecret,
 
     pages: {
-        signIn: '/login/',
-        error: '/error',
+        signIn: '/login',
+        error: '/login',
     },
 
     providers: [
@@ -31,6 +35,14 @@ export default NuxtAuthHandler({
                 }
             },
         }),
+        GithubProvider.default({
+            clientId: runtimeConfig.public.GITHUB_CLIENT_ID,
+            clientSecret: runtimeConfig.GITHUB_CLIENT_SECRET,
+        }),
+        GoogleProvider.default({
+            clientId: runtimeConfig.public.GOOGLE_CLIENT_ID,
+            clientSecret: runtimeConfig.GOOGLE_CLIENT_SECRET
+        })
     ],
 
     session: {
